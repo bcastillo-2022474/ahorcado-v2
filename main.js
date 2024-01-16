@@ -138,8 +138,10 @@ function renderError() {
 }
 
 function checkIfHasWin(guessedLetters, word) {
-	if (guessedLetters.size === word.length) return true;
-	return false;
+  for (let i = 0; i < word.length; i++) {
+    if (!guessedLetters.has(word[i])) return false;
+  }
+	return true;
 }
 
 function bodyToColor(color) {
@@ -158,15 +160,14 @@ function renderWin() {
 
 function main() {
 	console.log('main')
-	// const wordWithCase = getRandomWord();
-	const wordWithCase = 'a';
+	const wordWithCase = getRandomWord();
 	const word = wordWithCase.toLowerCase();
 	const guessedLetters = new Set();
 	console.log({word, guessedLetters})
 	printInputs(word, guessedLetters, wordWithCase);
 	const submitContainer = document.querySelector('.submit-container');
 
-	buttonSubmit.addEventListener("click", (e) => {
+	buttonSubmit.addEventListener("click", () => {
 		const letter = mainWordInput.value.toLowerCase()
 		console.log(letter)
 
@@ -175,16 +176,29 @@ function main() {
 		if ([...word].includes(letter)) {
 			guessedLetters.add(letter)
 			printInputs(word, guessedLetters, wordWithCase);
+			renderWin()
 			// checkIfHasWin
 			const hasWon = checkIfHasWin(guessedLetters, word);
-			if (hasWon) renderWin()
+			console.log({hasWon})
+			if (hasWon) {
+				renderWin();
+				// block submit button
+				submitContainer.style.display = 'none'
+			}
 		}
 		else renderError();
 		// clean input
 		mainWordInput.value = '';
 	})
-	submitContainer.addEventListener('keypress', (e) => {
-		// if (e.key === 'enter') buttonSubmit.
+	submitContainer.addEventListener('keydown', (e) => {
+		console.log(e.key)
+		if (e.key !== 'Enter') return;
+		console.log('doing')
+		// i need to pass the letter as event.value
+		const inputEvent = new Event('click', {bubbles: false, cancelable: false});
+		// Object.defineProperty(inputEvent, 'value', { value:  });
+		buttonSubmit.dispatchEvent(inputEvent);
+		mainWordInput.value = '';
 	})
 }
 
