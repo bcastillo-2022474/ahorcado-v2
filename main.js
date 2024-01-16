@@ -167,6 +167,13 @@ function main() {
 	printInputs(word, guessedLetters, wordWithCase);
 	const submitContainer = document.querySelector('.submit-container');
 
+  mainWordInput.addEventListener('input', (e) => {
+    const input = e.target.value;
+    if (input.length > 1) {
+      mainWordInput.value = mainWordInput.value[0];
+    }
+  })
+
 	buttonSubmit.addEventListener("click", () => {
 		const letter = mainWordInput.value.toLowerCase()
 		console.log(letter)
